@@ -16,11 +16,22 @@ namespace DotnetNeoPixels.Services
         {
             this.controller = settings.AddController(46, Pin.Gpio18, StripType.Unknown, 255, false);
         }
-        public void SolidPixels(int r, int g, int b)
+
+        public Task<bool> TurnOff()
+        {
+            using (var rpi = new WS281x(settings))
+            {
+                rpi.Reset();
+                rpi.Dispose();
+                return Task.FromResult<bool>(true);
+            }
+        }
+        public Task<bool> SolidPixels(int r, int g, int b)
         {
             using (var rpi = new WS281x(settings))
             {
                 rpi.SetAll(Color.FromArgb(255, r, g, b));
+                return Task.FromResult<bool>(true);
                 //rpi.SetLed(0, Color.Blue);
                 //rpi.SetLed(1, Color.Red);
                 //rpi.Render();
@@ -33,5 +44,6 @@ namespace DotnetNeoPixels.Services
                 //rpi.Dispose();
             }
         }
+
     }
 }

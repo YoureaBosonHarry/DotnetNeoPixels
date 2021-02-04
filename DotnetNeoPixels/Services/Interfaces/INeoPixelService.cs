@@ -7,6 +7,7 @@ namespace DotnetNeoPixels.Services.Interfaces
 {
     public interface INeoPixelService
     {
-        void SolidPixels(int r, int g, int b);
+        Task<bool> TurnOff();
+        Task<bool> SolidPixels(int r, int g, int b);
     }
 }

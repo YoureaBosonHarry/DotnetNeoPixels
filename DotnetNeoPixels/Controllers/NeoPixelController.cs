@@ -22,10 +22,19 @@ namespace DotnetNeoPixels.Controllers
         }
 
         [HttpPost]
-        [Route("SolidPattern")]
-        public void ChangePatternAsync([FromBody]Pixels pixels)
+        [Route("TurnOff")]
+        public async Task<IActionResult> TurnOffNeoPixels()
         {
-            this.neoPixelService.SolidPixels(pixels.r, pixels.g, pixels.b);
+            await this.neoPixelService.TurnOff();
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("SolidPattern")]
+        public async Task<IActionResult> SolidPattern([FromBody]Pixels pixels)
+        {
+            await this.neoPixelService.SolidPixels(pixels.r, pixels.g, pixels.b);
+            return Ok();
         }
     }
 }
