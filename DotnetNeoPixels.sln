@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetNeoPixels", "DotnetNeoPixels\DotnetNeoPixels.csproj", "{011FA272-C727-404D-8FDD-1EEB77B9DDA2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{011FA272-C727-404D-8FDD-1EEB77B9DDA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{011FA272-C727-404D-8FDD-1EEB77B9DDA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{011FA272-C727-404D-8FDD-1EEB77B9DDA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{011FA272-C727-404D-8FDD-1EEB77B9DDA2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {009329B4-9A69-47B5-B152-0BC1C77FF0A8}
+	EndGlobalSection
+EndGlobal
