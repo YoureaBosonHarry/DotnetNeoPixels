@@ -1,4 +1,5 @@
-﻿using DotnetNeoPixels.Services.Interfaces;
+﻿using DotnetNeoPixels.Models;
+using DotnetNeoPixels.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,11 +27,11 @@ namespace DotnetNeoPixels.Services
                 return Task.FromResult<bool>(true);
             }
         }
-        public Task<bool> SolidPixels(int r, int g, int b)
+        public Task<bool> SolidPixels(Pixels pixels)
         {
             using (var rpi = new WS281x(settings))
             {
-                rpi.SetAll(Color.FromArgb(255, r, g, b));
+                rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
                 return Task.FromResult<bool>(true);
                 //rpi.SetLed(0, Color.Blue);
                 //rpi.SetLed(1, Color.Red);
@@ -43,6 +44,11 @@ namespace DotnetNeoPixels.Services
                 //rpi.Reset();
                 //rpi.Dispose();
             }
+        }
+        
+        public Task<bool> FadePixels(Pixels)
+        {
+            return Task.FromResult<bool>(true);
         }
 
     }

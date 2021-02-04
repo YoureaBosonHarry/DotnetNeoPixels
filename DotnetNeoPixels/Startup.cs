@@ -9,6 +9,7 @@ using DotnetNeoPixels.Services;
 using DotnetNeoPixels.Services.Interfaces;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,6 @@ namespace DotnetNeoPixels
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<INeoPixelService, NeoPixelService>();

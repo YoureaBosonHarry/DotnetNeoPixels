@@ -33,7 +33,7 @@ namespace DotnetNeoPixels.Controllers
         [Route("SolidPattern")]
         public async Task<IActionResult> SolidPattern([FromBody]Pixels pixels)
         {
-            await this.neoPixelService.SolidPixels(pixels.r, pixels.g, pixels.b);
+            await this.neoPixelService.SolidPixels(pixels);
             return Ok();
         }
     }
