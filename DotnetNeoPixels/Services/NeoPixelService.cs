@@ -1,11 +1,13 @@
 ﻿using DotnetNeoPixels.Models;
 using DotnetNeoPixels.Services.Interfaces;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using rpi_ws281x;
+using System.Threading;
 
 namespace DotnetNeoPixels.Services
 {
@@ -13,9 +15,11 @@ namespace DotnetNeoPixels.Services
     {
         private readonly Settings settings = Settings.CreateDefaultSettings(false);
         private readonly Controller controller;
+        private readonly ILogger logger;
         public NeoPixelService()
         {
             this.controller = settings.AddController(46, Pin.Gpio18, StripType.Unknown, 255, false);
+            this.logger = Log.ForContext<NeoPixelService>();
         }
 
         public Task<bool> TurnOff()
@@ -46,8 +50,21 @@ namespace DotnetNeoPixels.Services
             }
         }
         
-        public Task<bool> FadePixels(Pixels)
+        public Task<bool> FadePixels(CancellationToken cancellationToken, Pixels pixels)
         {
+            using (var rpi = new WS281x(settings))
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    for (int i = 255; i > 0; i--)
+                    {
+                        this.logger.Information(i.ToString());
+                        rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
+                        rpi.SetBrightness(i);
+                        Thread.Sleep(50);
+                    }
+                }
+            }
             return Task.FromResult<bool>(true);
         }
 
