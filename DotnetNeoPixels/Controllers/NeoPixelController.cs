@@ -46,8 +46,15 @@ namespace DotnetNeoPixels.Controllers
         [Route("FadePattern")]
         public async Task<IActionResult> FadePattern([FromBody] Pixels pixels)
         {
-            Task.Run(async() => await this.neoPixelService.FadePixels(this.cancellationTokenSource.Token, pixels));
+            _ = Task.Run(async () => await this.neoPixelService.FadePixels(this.cancellationTokenSource.Token, pixels));
             return Ok();
+        }
+
+        [HttpPost]
+        [Route("LightningPattern")]
+        public async Task<IActionResult> LightningPattern()
+        {
+            ;
         }
     }
 }

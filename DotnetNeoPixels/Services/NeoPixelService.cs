@@ -1,5 +1,6 @@
 ﻿using DotnetNeoPixels.Models;
 using DotnetNeoPixels.Services.Interfaces;
+using MathNet.Numerics;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -56,12 +57,28 @@ namespace DotnetNeoPixels.Services
             {
                 while (!cancellationToken.IsCancellationRequested)
                 {
-                    for (int i = 255; i > 0; i--)
+                    for (double x = 0.0; x <= 2.0 * Math.PI; x += (1.0/255.0))
                     {
-                        this.logger.Information(i.ToString());
                         rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
-                        rpi.SetBrightness(i);
-                        Thread.Sleep(50);
+                        rpi.SetBrightness((int)(255.0*x));
+                        Thread.Sleep(10);
+                    }
+                }
+            }
+            return Task.FromResult<bool>(true);
+        }
+
+        public Task<bool> LightingPattern(CancellationToken cancellationToken)
+        {
+            using (var rpi = new WS281x(settings))
+            {
+                while (!cancellationToken.IsCancellationRequested)
+                {
+                    for (double x = 0.0; x <= 1.0; x += (1.0 / 255.0))
+                    {
+                        rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
+                        rpi.SetBrightness((int)(255.0 * x));
+                        Thread.Sleep(10);
                     }
                 }
             }
