@@ -16,12 +16,11 @@ namespace DotnetNeoPixels.Controllers
     {
         private readonly ILogger logger;
         private readonly INeoPixelService neoPixelService;
-        private readonly CancellationTokenSource cancellationTokenSource;
+        private static CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
         public NeoPixelController(INeoPixelService neoPixelService)
         {
             this.neoPixelService = neoPixelService;
             this.logger = Log.ForContext<NeoPixelController>();
-            this.cancellationTokenSource = new CancellationTokenSource();
         }
 
         [HttpPost]
@@ -44,17 +43,46 @@ namespace DotnetNeoPixels.Controllers
 
         [HttpPost]
         [Route("FadePattern")]
-        public async Task<IActionResult> FadePattern([FromBody] Pixels pixels)
+        public IActionResult FadePattern([FromBody] Pixels pixels)
         {
-            _ = Task.Run(async () => await this.neoPixelService.FadePixels(this.cancellationTokenSource.Token, pixels));
+            ResetToken();
+            Task.Run(() =>
+            {   
+                this.neoPixelService.FadePixels(cancellationTokenSource.Token, pixels);
+            });
             return Ok();
         }
 
         [HttpPost]
         [Route("LightningPattern")]
-        public async Task<IActionResult> LightningPattern()
+        public IActionResult LightningPattern()
         {
-            ;
+            ResetToken();
+            Task.Run(() =>
+            {
+                this.neoPixelService.LightningPattern(cancellationTokenSource.Token);
+            });
+            return Ok();
+        }
+
+        [HttpPost]
+        [Route("FlamePattern")]
+        public IActionResult FlamePattern([FromBody] Pixels pixels)
+        {
+            ResetToken();
+            Task.Run(() =>
+            {
+                this.neoPixelService.FlamePattern(cancellationTokenSource.Token, pixels);
+            });
+            return Ok();
+        }
+
+        private void ResetToken()
+        {
+            cancellationTokenSource.Cancel();
+            cancellationTokenSource.Dispose();
+            Thread.Sleep(500);
+            cancellationTokenSource = new CancellationTokenSource();
         }
     }
 }

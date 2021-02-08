@@ -1,0 +1,30 @@
+﻿version: '3.9'
+services:
+  nginx:
+    image: nginx:1.19.6-alpine
+    ports:
+      - "80:80"
+    networks:
+      - neopixels_net
+    volumes:
+    - "./nginx/:/etc/nginx/conf.d"
+    restart: always
+    tty: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "10"
+  dotnetneopixels:
+    image: youreabosonharry/dotnetneopixels:0.4.0
+    restart: always
+    networks:
+      - neopixels_net
+    privileged: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "500k"
+        max-file: "10"
+networks:
+  neopixels_net:

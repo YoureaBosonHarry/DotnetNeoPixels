@@ -11,6 +11,8 @@ namespace DotnetNeoPixels.Services.Interfaces
     {
         Task<bool> TurnOff();
         Task<bool> SolidPixels(Pixels pixels);
-        Task<bool> FadePixels(CancellationToken cancellationToken, Pixels pixels);
+        void FadePixels(CancellationToken token, Pixels pixels);
+        void LightningPattern(CancellationToken token);
+        void FlamePattern(CancellationToken token, Pixels pixels);
     }
 }

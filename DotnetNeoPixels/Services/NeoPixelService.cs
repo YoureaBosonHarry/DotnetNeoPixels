@@ -1,6 +1,7 @@
 ﻿using DotnetNeoPixels.Models;
 using DotnetNeoPixels.Services.Interfaces;
 using MathNet.Numerics;
+using MathNet.Numerics.Random;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -51,38 +52,103 @@ namespace DotnetNeoPixels.Services
             }
         }
         
-        public Task<bool> FadePixels(CancellationToken cancellationToken, Pixels pixels)
+        public void FadePixels(CancellationToken token, Pixels pixels)
         {
             using (var rpi = new WS281x(settings))
             {
-                while (!cancellationToken.IsCancellationRequested)
+                rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
+                while (true)
                 {
-                    for (double x = 0.0; x <= 2.0 * Math.PI; x += (1.0/255.0))
+                    for (double x = 0.0; x <= 2.0 * Math.PI; x += (5.0 / 255.0))
                     {
-                        rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
-                        rpi.SetBrightness((int)(255.0*x));
+                        if (token.IsCancellationRequested)
+                        {
+                            this.logger.Information("Cancelling Fade Pattern...");
+                            break;
+                        }
+                        rpi.SetBrightness((int)(255.0 * Math.Abs(Trig.Sin(x))));
                         Thread.Sleep(10);
                     }
                 }
             }
-            return Task.FromResult<bool>(true);
         }
 
-        public Task<bool> LightingPattern(CancellationToken cancellationToken)
+        public void LightningPattern(CancellationToken token)
         {
+            var random = new Random();
             using (var rpi = new WS281x(settings))
             {
-                while (!cancellationToken.IsCancellationRequested)
+                while (true)
                 {
-                    for (double x = 0.0; x <= 1.0; x += (1.0 / 255.0))
+                    if (token.IsCancellationRequested)
                     {
-                        rpi.SetAll(Color.FromArgb(255, pixels.r, pixels.g, pixels.b));
-                        rpi.SetBrightness((int)(255.0 * x));
-                        Thread.Sleep(10);
+                        this.logger.Information("Cancelling Lightning Pattern...");
+                        break;
                     }
+                    var blue = random.NextDouble();
+                    if (blue < 100)
+                    {
+                        blue = 100;
+                    }
+                    rpi.SetBrightness((int)(255 * random.NextDouble()));
+                    rpi.SetAll(Color.FromArgb(255, 100, 100, (int)blue));
+                    Thread.Sleep((int)(2000 * random.NextDouble()));
+                    rpi.SetBrightness(0);
+                    Thread.Sleep((int)(5000 * random.NextDouble()));
                 }
             }
-            return Task.FromResult<bool>(true);
+        }
+
+        public void FlamePattern(CancellationToken token, Pixels pixels)
+        {
+            var random = new Random();
+            using (var rpi = new WS281x(settings))
+            {
+                int r, g, b;
+                if (pixels.r > pixels.g && pixels.r > pixels.b)
+                {
+                    r = 226; g = 121; b = 35;
+                }
+                else if (pixels.g > pixels.r && pixels.g > pixels.b)
+                {
+                    r = 74; g = 150; b = 12;
+                }
+                else if (pixels.b > pixels.r && pixels.b > pixels.r)
+                {
+                    r = 158; g = 8; b = 148;
+                }
+                else
+                {
+                    r = 226; g = 121; b = 35;
+                }
+                    while (true)
+                {
+                    if (token.IsCancellationRequested)
+                    {
+                        this.logger.Information("Cancelling Lightning Pattern...");
+                        break;
+                    }
+                    for (int i = 0; i < 46; i++)
+                    {
+                        int flicker = (int)(55 * random.NextDouble());
+                        int r1 = r - flicker, g1 = g - flicker, b1 = b - flicker;
+                        if (r1 < 0) {
+                            r1 = 0;
+                        }
+                        if (g1 < 0)
+                        {
+                            g1 = 0;
+                        }
+                        if (b1 < 0)
+                        {
+                            b1 = 0;
+                        }
+                        rpi.SetLed(i, Color.FromArgb(255, r1, g1, b1));
+                    }
+                    rpi.Render();
+                    Thread.Sleep(random.Next(10, 133));
+                }
+            }
         }
 
     }
